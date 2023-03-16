@@ -2,7 +2,7 @@ name: "SHFT Heroku Deploy"
 description: "Deploy to Heroku"
 inputs:
   github_repo:
-    description: "GitHub repo name with owner (eg. formsort/formsort)"
+    description: "GitHub repo name with owner (eg. shftco/shftco)"
     required: true
   github_token:
     description: "GITHUB_TOKEN"
@@ -43,9 +43,6 @@ outputs:
   release_id:
     description: "The id of the release created by Heroku"
     value: ${{ steps.get_release.outputs.id }}
-  release_log:
-    description: "The logs for the release created by Heroku"
-    value: ${{ steps.release_logs.outputs.text }}
 runs:
   using: "composite"
   steps:
@@ -182,18 +179,6 @@ runs:
           | jq -rc . \
         )
         echo "release=$heroku_release" >> $GITHUB_OUTPUT
-    - id: release_logs
-      name: Heroku release logs
-      shell: bash
-      run: |
-        sleep ${{ inputs.heroku_release_sleep }}; # Give Heroku some time to kick off the release
-        # Wait till the release finishes
-        curl -fsSN $(echo '${{ steps.get_release.outputs.release }}' | jq -rc .output_stream_url) | tee release_log.txt
-        release_log=$(cat release_log.txt)
-        release_log="${release_log//'%'/'%25'}"
-        release_log="${release_log//$'\n'/'%0A'}"
-        release_log="${release_log//$'\r'/'%0D'}"
-        echo "text=$release_log" >> $GITHUB_OUTPUT
 
 branding:
   color: green
