@@ -1,5 +1,5 @@
-name: "Zero-waste Heroku Deploy"
-description: "Deploy to Heroku with a repo tarball"
+name: "SHFT Heroku Deploy"
+description: "Deploy to Heroku"
 inputs:
   github_repo:
     description: "GitHub repo name with owner (eg. formsort/formsort)"
